@@ -1,32 +1,84 @@
 {
   "name": "js-doc-design",
   "version": "1.0.0",
-  "main": "index.js",
-  "description": "Проект для автоматизации работы с JSDoc документацией и контроля её наличия",
+  "type": "module",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/src/index.js",
+      "types": "./dist/src/index.d.ts"
+    },
+    "./eslint-plugin": {
+      "import": "./dist/eslint-plugins/jsdoc-required.js",
+      "types": "./dist/eslint-plugins/jsdoc-required.d.ts"
+    }
+  },
+  "bin": {
+    "jsdoc-check": "./dist/scripts/check-jsdoc.js",
+    "jsdoc-generate": "./dist/scripts/generate-docs.js",
+    "jsdoc-simple": "./dist/scripts/simple-docs.js"
+  },
+  "files": [
+    "dist/",
+    "README.md",
+    "LICENSE"
+  ],
+  "description": "Автоматизация работы с JSDoc документацией и контроля её наличия. Включает ESLint плагин, скрипты проверки и генерации документации.",
   "scripts": {
+    "build": "tsc && node scripts/add-shebang.js",
+    "prepublishOnly": "npm run build",
+    "dev": "node --loader ts-node/esm src/index.ts",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "docs:generate": "node scripts/generate-docs.js",
-    "docs:simple": "node scripts/simple-docs.js",
-    "check:jsdoc": "node scripts/check-jsdoc.js",
-    "check:jsdoc:full": "node scripts/check-jsdoc.js --full",
-    "check:jsdoc:new": "node scripts/check-jsdoc.js --new",
-    "check:jsdoc:staged": "node scripts/check-jsdoc.js --staged",
+    "lint:new": "eslint . --config eslint.config.new.js",
+    "lint:staged": "eslint . --config eslint.config.staged.js",
+    "docs:generate": "node --loader ts-node/esm scripts/generate-docs.ts",
+    "docs:simple": "node --loader ts-node/esm scripts/simple-docs.ts",
+    "check:jsdoc": "node --loader ts-node/esm scripts/check-jsdoc.ts",
+    "check:jsdoc:full": "node --loader ts-node/esm scripts/check-jsdoc.ts --full",
+    "check:jsdoc:new": "node --loader ts-node/esm scripts/check-jsdoc.ts --new",
+    "check:jsdoc:staged": "node --loader ts-node/esm scripts/check-jsdoc.ts --staged",
+    "setup:hooks": "git config core.hooksPath .githooks",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
+    "@eslint/js": "^9.30.1",
+    "@types/doctrine": "^0.0.9",
+    "@types/eslint": "^9.6.1",
+    "@types/estree": "^1.0.8",
+    "@types/node": "^20.10.6",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
-    "doctrine": "^3.0.0",
     "eslint": "^8.57.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "doctrine": "^3.0.0",
     "glob": "^11.0.3"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Kirill Lebedenko",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kirilllebedenko/js-doc-design.git"
+  },
+  "homepage": "https://github.com/kirilllebedenko/js-doc-design#readme",
+  "bugs": {
+    "url": "https://github.com/kirilllebedenko/js-doc-design/issues"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
   "keywords": [
     "jsdoc",
     "eslint",
     "documentation",
-    "automation"
+    "automation",
+    "typescript",
+    "esm",
+    "code-quality",
+    "developer-tools"
   ]
 }
