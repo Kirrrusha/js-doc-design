@@ -1,0 +1,32 @@
+{
+  "name": "js-doc-design",
+  "version": "1.0.0",
+  "main": "index.js",
+  "description": "Проект для автоматизации работы с JSDoc документацией и контроля её наличия",
+  "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "docs:generate": "node scripts/generate-docs.js",
+    "docs:simple": "node scripts/simple-docs.js",
+    "check:jsdoc": "node scripts/check-jsdoc.js",
+    "check:jsdoc:full": "node scripts/check-jsdoc.js --full",
+    "check:jsdoc:new": "node scripts/check-jsdoc.js --new",
+    "check:jsdoc:staged": "node scripts/check-jsdoc.js --staged",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "doctrine": "^3.0.0",
+    "eslint": "^8.57.1",
+    "glob": "^11.0.3"
+  },
+  "author": "",
+  "license": "ISC",
+  "keywords": [
+    "jsdoc",
+    "eslint",
+    "documentation",
+    "automation"
+  ]
+}
