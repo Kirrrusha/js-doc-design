@@ -23,9 +23,15 @@ function newTestFunction(param) {
     return `New function result: ${param}`;
 }
 
+// Еще одна новая функция без JSDoc
+const anotherNewFunction = (data) => {
+    return data.toUpperCase();
+};
+
 module.exports = {
     testFunction,
     arrowFunction,
     useCustomHook,
-    newTestFunction
+    newTestFunction,
+    anotherNewFunction
 };
