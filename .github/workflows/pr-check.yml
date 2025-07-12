@@ -1,0 +1,112 @@
+name: PR Check
+on:
+  pull_request:
+    branches: [main, develop]
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  pr-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm ci
+      - name: Run tests
+        run: npm run test
+      - name: Check TypeScript compilation
+        run: npx tsc --noEmit
+      - name: Build project
+        run: npm run build
+      - name: Comment PR with results
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const jobStatus = '${{ job.status }}';
+            let message = '';
+            if (jobStatus === 'success') {
+              message = '✅ All checks passed! This PR is ready for review.';
+            } else {
+              message = '❌ Some checks failed. Please review the errors above.';
+            }
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: message
+            });
+
+  dependency-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+      - name: Check for package-lock.json changes
+        run: |
+          if git diff --name-only origin/${{ github.base_ref }}...HEAD | grep -q "package-lock.json"; then
+            echo "package-lock.json was modified"
+            echo "DEPS_CHANGED=true" >> $GITHUB_ENV
+          else
+            echo "package-lock.json was not modified"
+            echo "DEPS_CHANGED=false" >> $GITHUB_ENV
+          fi
+      - name: Install dependencies
+        run: npm ci
+      - name: Check for security vulnerabilities
+        if: env.DEPS_CHANGED == 'true'
+        run: npm audit --audit-level=moderate
+      - name: Check for outdated dependencies
+        if: env.DEPS_CHANGED == 'true'
+        run: npm outdated || true
+
+  size-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm ci
+      - name: Build project
+        run: npm run build
+      - name: Check bundle size
+        run: |
+          echo "Checking built package size..."
+          du -sh dist/
+          find dist/ -name "*.js" -exec wc -l {} + | tail -1
+      - name: Pack and check package size
+        run: |
+          npm pack
+          PACKAGE_SIZE=$(du -h js-doc-design-*.tgz | cut -f1)
+          echo "Package size: $PACKAGE_SIZE"
+
+          # Check if package is too large (>1MB)
+          PACKAGE_SIZE_BYTES=$(du -b js-doc-design-*.tgz | cut -f1)
+          if [ $PACKAGE_SIZE_BYTES -gt 1048576 ]; then
+            echo "⚠️ Warning: Package size is larger than 1MB"
+            exit 1
+          else
+            echo "✅ Package size is acceptable"
+          fi

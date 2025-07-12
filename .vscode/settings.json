@@ -1,0 +1,8 @@
+{
+  "yaml.schemas": {
+    "/Users/kirilllebedenko/.vscode/extensions/continue.continue-1.0.7-darwin-arm64/config-yaml-schema.json": [
+      ".continue/**/*.yaml"
+    ],
+    "https://www.schemastore.org/github-workflow.json": "file:///Users/kirilllebedenko/projects/js-doc-design/.github/workflows/pr-check.yml"
+  }
+}
