@@ -34,13 +34,12 @@
   "include": [
     "src/**/*",
     "scripts/**/*",
-    "eslint-plugins/**/*"
+    "eslint-plugins/**/*",
+    "vitest.config.ts"
   ],
   "exclude": [
     "node_modules",
-    "dist",
-    "**/*.test.ts",
-    "**/*.spec.ts"
+    "dist"
   ],
   "ts-node": {
     "esm": true,
