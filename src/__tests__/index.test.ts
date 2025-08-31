@@ -116,11 +116,9 @@ describe("Основные функции", () => {
     it("должна работать с разными функциями обработки", () => {
       const numbers = [1, 2, 3, 4, 5];
 
-      // Квадрат числа
       const squared = processArray(numbers, (x) => x * x);
       expect(squared).toEqual([1, 4, 9, 16, 25]);
 
-      // Преобразование в строку
       const strings = processArray(numbers, (x) => `число ${x}`);
       expect(strings).toEqual([
         "число 1",
@@ -130,7 +128,6 @@ describe("Основные функции", () => {
         "число 5",
       ]);
 
-      // Проверка на четность
       const isEven = processArray(numbers, (x) => x % 2 === 0);
       expect(isEven).toEqual([false, true, false, true, false]);
     });

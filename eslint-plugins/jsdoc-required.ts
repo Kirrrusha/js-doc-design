@@ -171,18 +171,15 @@ const plugin = {
                  * @param node - AST узел функции
                  */
                 function checkFunction(node: any): void {
-                    // Пропускаем анонимные функции и стрелочные функции в выражениях
                     if (node.type === 'ArrowFunctionExpression' &&
                         node.parent?.type !== 'VariableDeclarator') {
                         return;
                     }
 
-                    // Проверяем, нужно ли проверять эту функцию в зависимости от режима
                     if (!shouldCheckFunction(node)) {
                         return;
                     }
 
-                    // Проверяем обычные функции и хуки
                     const isHook = isReactHook(node.parent || node);
                     const isNamedFunction = node.type === 'FunctionDeclaration' ||
                                           (node.type === 'ArrowFunctionExpression' &&

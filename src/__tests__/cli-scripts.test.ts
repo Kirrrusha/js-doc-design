@@ -2,7 +2,7 @@ import { execSync } from "child_process";
 import fs from "fs";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-// Мокаем зависимости
+// Mock dependencies
 vi.mock("child_process", () => ({
   execSync: vi.fn(),
 }));
