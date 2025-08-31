@@ -20,7 +20,16 @@
     "jsdoc-simple": "./dist/scripts/simple-docs.js"
   },
   "files": [
-    "dist/",
+    "dist/src/index.js",
+    "dist/src/index.d.ts",
+    "dist/eslint-plugins/jsdoc-required.js",
+    "dist/eslint-plugins/jsdoc-required.d.ts",
+    "dist/scripts/check-jsdoc.js",
+    "dist/scripts/check-jsdoc.d.ts",
+    "dist/scripts/generate-docs.js",
+    "dist/scripts/generate-docs.d.ts",
+    "dist/scripts/simple-docs.js",
+    "dist/scripts/simple-docs.d.ts",
     "README.md",
     "LICENSE"
   ],
@@ -29,8 +38,8 @@
     "build": "tsc && node --loader ts-node/esm scripts/add-shebang.ts",
     "prepublishOnly": "pnpm run build",
     "dev": "node --loader ts-node/esm src/index.ts",
-    "lint": "npx eslint .",
-    "lint:fix": "npx eslint . --fix",
+    "lint": "pnpm exec eslint .",
+    "lint:fix": "pnpm exec eslint . --fix",
     "lint:new": "eslint . --config eslint.config.new.js",
     "lint:staged": "eslint . --config eslint.config.staged.js",
     "docs:generate": "node --loader ts-node/esm scripts/generate-docs.ts",

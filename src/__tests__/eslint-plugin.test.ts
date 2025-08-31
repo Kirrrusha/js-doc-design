@@ -1,7 +1,6 @@
 import { execSync } from "child_process";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-// Мокаем execSync для тестирования Git интеграции
 vi.mock("child_process", () => ({
   execSync: vi.fn(),
 }));
@@ -44,7 +43,7 @@ describe("ESLint Plugin JSDoc Required", () => {
       expect(rule.meta.schema).toBeDefined();
       expect(Array.isArray(rule.meta.schema)).toBe(true);
 
-      // Проверяем что schema существует и не пустая
+      // Check that schema exists and is not empty
       if (rule.meta.schema && rule.meta.schema.length > 0) {
         expect(rule.meta.schema.length).toBe(1);
         expect(rule.meta.schema[0].properties.mode).toBeDefined();
@@ -54,7 +53,7 @@ describe("ESLint Plugin JSDoc Required", () => {
           "staged",
         ]);
       } else {
-        // Если schema пустая, это тоже валидно для некоторых правил
+        // If schema is empty, this might be valid for some rules
         expect(rule.meta.schema.length).toBe(0);
       }
     });
@@ -75,7 +74,7 @@ describe("ESLint Plugin JSDoc Required", () => {
     it("должен создавать правило с корректными обработчиками", async () => {
       const plugin = await import("../../eslint-plugins/jsdoc-required");
 
-      // Мокаем контекст ESLint
+      // Mock ESLint context
       const mockContext = {
         options: [{ mode: "full" }],
         getFilename: () => "/test/file.ts",
@@ -171,7 +170,7 @@ describe("ESLint Plugin JSDoc Required", () => {
         report: vi.fn(),
       };
 
-      // Должно создаться правило без ошибок, даже если Git команды не работают
+              // Should create rule without errors, even if Git commands don't work
       const rule = plugin.default.rules["require-jsdoc"].create(
         mockContext as any
       );

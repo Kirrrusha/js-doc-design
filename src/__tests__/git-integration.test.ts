@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { execSync } from 'child_process';
 
-// Мокаем execSync для тестирования Git команд
+// Mock execSync for testing Git commands
 vi.mock('child_process', () => ({
   execSync: vi.fn()
 }));
@@ -22,7 +22,6 @@ describe('Git Integration', () => {
       const mockOutput = 'src/test.ts\nsrc/utils.ts\n';
       mockedExecSync.mockReturnValue(Buffer.from(mockOutput));
 
-      // Тестируем, что execSync вызывается корректно
       const result = execSync('git diff --name-only', { encoding: 'utf8' });
       expect(result.toString()).toBe(mockOutput);
     });
@@ -188,8 +187,8 @@ diff --git a/src/new.ts b/src/new.ts
     });
 
     it('должен работать с режимом full (без Git команд)', () => {
-      // В режиме full Git команды не используются
-      // Тест проверяет, что мокирование не влияет на другую логику
+          // In full mode Git commands are not used
+    // Test verifies that mocking doesn't affect other logic
       expect(true).toBe(true);
     });
   });
@@ -211,7 +210,7 @@ line3
       mockedExecSync.mockReturnValue(Buffer.from(mockOutput));
 
       const result = execSync('git log --oneline', { encoding: 'utf8' });
-      expect(result.toString().split('\n')).toHaveLength(4); // 3 строки + пустая
+              expect(result.toString().split('\n')).toHaveLength(4); // 3 lines + empty
     });
   });
 });

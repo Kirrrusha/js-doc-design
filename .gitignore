@@ -7,4 +7,10 @@ coverage/
 # pnpm
 .pnpm-store/
 
+# test files
+src/test-*.ts
+src/test-*.js
+dist/src/test-*.js
+dist/src/test-*.d.ts
+
 $HOME/

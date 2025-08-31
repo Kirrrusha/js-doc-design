@@ -65,7 +65,7 @@ function checkFileForJSDoc(filePath: string): JSDocError[] {
     const errors: JSDocError[] = [];
     const lines = content.split('\n');
 
-    // Поиск функций без JSDoc (поддержка TypeScript и JavaScript)
+    // Search for functions without JSDoc (TypeScript and JavaScript support)
     const functionRegex = /(?:^|\n)\s*(?:export\s+)?(?:function\s+(\w+)|(?:const|let|var)\s+(\w+)\s*=\s*(?:function|\(.*?\)\s*=>))/g;
 
     let match: RegExpExecArray | null;
