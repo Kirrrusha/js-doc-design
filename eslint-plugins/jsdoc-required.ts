@@ -60,7 +60,7 @@ const plugin = {
                         const command = staged ? 'git diff --cached --name-only' : 'git diff HEAD --name-only';
                         const output = execSync(command, { encoding: 'utf8', cwd: process.cwd() });
                         return output.trim().split('\n').filter(file => file.length > 0);
-                    } catch (error) {
+                    } catch {
                         return [];
                     }
                 }
@@ -95,7 +95,7 @@ const plugin = {
                         }
 
                         return newLines;
-                    } catch (error) {
+                    } catch {
                         return [];
                     }
                 }
