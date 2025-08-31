@@ -53,20 +53,25 @@ interface SimpleFunctionInfo {
  * @returns Массив путей к TS/JS файлам
  */
 function getTSFiles(dir: string, fileList: string[] = []): string[] {
-    const files = fs.readdirSync(dir);
+    try {
+        const files = fs.readdirSync(dir);
 
-    files.forEach(file => {
-        const filePath = path.join(dir, file);
-        const stat = fs.statSync(filePath);
+        files.forEach(file => {
+            const filePath = path.join(dir, file);
+            const stat = fs.statSync(filePath);
 
-        if (stat.isDirectory()) {
-            getTSFiles(filePath, fileList);
-        } else if (file.endsWith('.ts') || file.endsWith('.js')) {
-            fileList.push(filePath);
-        }
-    });
+            if (stat.isDirectory()) {
+                getTSFiles(filePath, fileList);
+            } else if (file.endsWith('.ts') || file.endsWith('.js')) {
+                fileList.push(filePath);
+            }
+        });
 
-    return fileList;
+        return fileList;
+    } catch (error) {
+        console.warn(`Не удалось прочитать директорию ${dir}:`, (error as Error).message);
+        return fileList;
+    }
 }
 
 /**
@@ -172,6 +177,28 @@ function generateMarkdown(functions: SimpleFunctionInfo[]): string {
 function main(): void {
     try {
         console.log('Поиск TS/JS файлов...');
+
+        if (!fs.existsSync('src')) {
+            console.log('Папка src не найдена. Создаем пустую документацию.');
+            const documentation = generateMarkdown([]);
+
+            let readmeContent = '';
+            const readmePath = 'README.md';
+
+            if (fs.existsSync(readmePath)) {
+                readmeContent = fs.readFileSync(readmePath, 'utf8');
+            }
+
+            const apiSectionRegex = /## API Документация[\s\S]*?(?=##|$)/;
+            readmeContent = readmeContent.replace(apiSectionRegex, '');
+
+            readmeContent = readmeContent.trim() + '\n\n' + documentation;
+
+            fs.writeFileSync(readmePath, readmeContent);
+            console.log('README.md обновлен с пустой документацией API');
+            return;
+        }
+
         const tsFiles = getTSFiles('src');
         console.log(`Найдено ${tsFiles.length} TS/JS файлов`);
 
