@@ -22,10 +22,6 @@
   "files": [
     "dist/src/index.js",
     "dist/src/index.d.ts",
-    "dist/src/test-new-function.js",
-    "dist/src/test-new-function.d.ts",
-    "dist/src/test-without-jsdoc.js",
-    "dist/src/test-without-jsdoc.d.ts",
     "dist/eslint-plugins/jsdoc-required.js",
     "dist/eslint-plugins/jsdoc-required.d.ts",
     "dist/scripts/check-jsdoc.js",
