@@ -1,64 +1,31 @@
-# Source files
+# Исходный код
 src/
 scripts/
 eslint-plugins/
 
-# TypeScript config
+# Тестовые файлы
+**/__tests__/
+**/*.test.*
+**/*.spec.*
+
+# Конфигурационные файлы разработки
 tsconfig.json
+vitest.config.ts
+eslint.config.*
+.prettierrc*
 
-# ESLint config
-eslint.config.js
+# Файлы сборки и карты
+**/*.map
 
-# Development files
-.eslintrc.*
-.githooks/
-.github/
-
-# Test files
-*.test.ts
-*.test.js
-*.spec.ts
-*.spec.js
-
-# Development dependencies
+# Временные файлы
 node_modules/
-
-# IDE files
-.vscode/
-.idea/
-
-# OS files
-.DS_Store
-Thumbs.db
-
-# Logs
-*.log
-npm-debug.log*
-
-# Runtime data
-pids
-*.pid
-*.seed
-*.pid.lock
-
-# Coverage directory used by tools like istanbul
 coverage/
+.vite/
 
-# Dependency directories
-node_modules/
-jspm_packages/
+# Git файлы
+.git/
+.githooks/
 
-# Optional npm cache directory
-.npm
-
-# Optional REPL history
-.node_repl_history
-
-# Output of 'npm pack'
-*.tgz
-
-# Yarn Integrity file
-.yarn-integrity
-
-# dotenv environment variables file
-.env
+# Логи и кэш
+*.log
+.cache/
