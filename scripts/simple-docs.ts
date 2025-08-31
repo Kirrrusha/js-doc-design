@@ -53,20 +53,25 @@ interface SimpleFunctionInfo {
  * @returns Массив путей к TS/JS файлам
  */
 function getTSFiles(dir: string, fileList: string[] = []): string[] {
-    const files = fs.readdirSync(dir);
+    try {
+        const files = fs.readdirSync(dir);
 
-    files.forEach(file => {
-        const filePath = path.join(dir, file);
-        const stat = fs.statSync(filePath);
+        files.forEach(file => {
+            const filePath = path.join(dir, file);
+            const stat = fs.statSync(filePath);
 
-        if (stat.isDirectory()) {
-            getTSFiles(filePath, fileList);
-        } else if (file.endsWith('.ts') || file.endsWith('.js')) {
-            fileList.push(filePath);
-        }
-    });
+            if (stat.isDirectory()) {
+                getTSFiles(filePath, fileList);
+            } else if (file.endsWith('.ts') || file.endsWith('.js')) {
+                fileList.push(filePath);
+            }
+        });
 
-    return fileList;
+        return fileList;
+    } catch (error) {
+        console.warn(`Не удалось прочитать директорию ${dir}:`, (error as Error).message);
+        return fileList;
+    }
 }
 
 /**
@@ -78,7 +83,6 @@ function getTSFiles(dir: string, fileList: string[] = []): string[] {
 function extractJSDocFromContent(content: string, filePath: string): SimpleFunctionInfo[] {
     const functions: SimpleFunctionInfo[] = [];
 
-    // Простое регулярное выражение для поиска JSDoc комментариев (поддержка TypeScript)
     const jsdocRegex = /\/\*\*([\s\S]*?)\*\/\s*(?:export\s+)?(?:function\s+(\w+)|(?:const|let|var)\s+(\w+)\s*=)/g;
 
     let match: RegExpExecArray | null;
@@ -87,7 +91,6 @@ function extractJSDocFromContent(content: string, filePath: string): SimpleFunct
         const functionName = functionName1 || functionName2;
 
         if (functionName && jsdocContent) {
-            // Простой парсинг JSDoc
             const description = jsdocContent.match(/@description\s+(.*?)(?=@|\*\/|$)/s);
             const params = [...jsdocContent.matchAll(/@param\s+\{([^}]+)\}\s+(\w+)\s*-?\s*(.*?)(?=@|\*\/|$)/gs)];
             const returns = jsdocContent.match(/@returns?\s+\{([^}]+)\}\s*(.*?)(?=@|\*\/|$)/s);
@@ -174,6 +177,28 @@ function generateMarkdown(functions: SimpleFunctionInfo[]): string {
 function main(): void {
     try {
         console.log('Поиск TS/JS файлов...');
+
+        if (!fs.existsSync('src')) {
+            console.log('Папка src не найдена. Создаем пустую документацию.');
+            const documentation = generateMarkdown([]);
+
+            let readmeContent = '';
+            const readmePath = 'README.md';
+
+            if (fs.existsSync(readmePath)) {
+                readmeContent = fs.readFileSync(readmePath, 'utf8');
+            }
+
+            const apiSectionRegex = /## API Документация[\s\S]*?(?=##|$)/;
+            readmeContent = readmeContent.replace(apiSectionRegex, '');
+
+            readmeContent = readmeContent.trim() + '\n\n' + documentation;
+
+            fs.writeFileSync(readmePath, readmeContent);
+            console.log('README.md обновлен с пустой документацией API');
+            return;
+        }
+
         const tsFiles = getTSFiles('src');
         console.log(`Найдено ${tsFiles.length} TS/JS файлов`);
 
@@ -189,7 +214,6 @@ function main(): void {
 
         const documentation = generateMarkdown(allFunctions);
 
-        // Обновляем README
         let readmeContent = '';
         const readmePath = 'README.md';
 
@@ -197,11 +221,9 @@ function main(): void {
             readmeContent = fs.readFileSync(readmePath, 'utf8');
         }
 
-        // Удаляем старую документацию API
         const apiSectionRegex = /## API Документация[\s\S]*?(?=##|$)/;
         readmeContent = readmeContent.replace(apiSectionRegex, '');
 
-        // Добавляем новую документацию
         readmeContent = readmeContent.trim() + '\n\n' + documentation;
 
         fs.writeFileSync(readmePath, readmeContent);
@@ -213,7 +235,6 @@ function main(): void {
     }
 }
 
-// Запускаем скрипт
 if (import.meta.url === `file://${process.argv[1]}`) {
     main();
 }

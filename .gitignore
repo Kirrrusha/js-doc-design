@@ -3,3 +3,8 @@ node_modules/
 dist/
 coverage/
 .env
+
+# pnpm
+.pnpm-store/
+
+$HOME/

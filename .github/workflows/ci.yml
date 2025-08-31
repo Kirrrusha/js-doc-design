@@ -22,22 +22,26 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
-        cache: 'npm'
+
+    - name: Install pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: latest
 
     - name: Install dependencies
-      run: npm ci
+      run: pnpm install --frozen-lockfile
 
     - name: Run ESLint
-      run: npm run lint
+      run: pnpm run lint
 
     - name: Run TypeScript compilation
-      run: npx tsc --noEmit
+      run: pnpm exec tsc --noEmit
 
     - name: Run tests
-      run: npm run test:run
+      run: pnpm run test:run
 
     - name: Run tests with coverage
-      run: npm run test:coverage
+      run: pnpm run test:coverage
 
     - name: Upload coverage to Codecov
       if: matrix.node-version == '20.x'
@@ -48,12 +52,12 @@ jobs:
         fail_ci_if_error: false
 
     - name: Build project
-      run: npm run build
+      run: pnpm run build
 
     - name: Test CLI commands
       run: |
-        npm run docs:generate
-        npm run docs:simple
+        pnpm run docs:generate
+        pnpm run docs:simple
 
   lint-and-format:
     runs-on: ubuntu-latest
@@ -66,13 +70,17 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '20.x'
-        cache: 'npm'
+
+    - name: Install pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: latest
 
     - name: Install dependencies
-      run: npm ci
+      run: pnpm install --frozen-lockfile
 
     - name: Check ESLint (full mode)
-      run: npm run lint
+      run: pnpm run lint
 
   security:
     runs-on: ubuntu-latest
@@ -85,16 +93,20 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '20.x'
-        cache: 'npm'
+
+    - name: Install pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: latest
 
     - name: Install dependencies
-      run: npm ci
+      run: pnpm install --frozen-lockfile
 
     - name: Run security audit
-      run: npm audit --audit-level=moderate
+      run: pnpm audit --audit-level=moderate
 
     - name: Check for vulnerabilities
-      run: npm audit --audit-level=high --production
+      run: pnpm audit --audit-level=high --production
 
   package-test:
     runs-on: ubuntu-latest
@@ -107,28 +119,32 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '20.x'
-        cache: 'npm'
+
+    - name: Install pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: latest
 
     - name: Install dependencies
-      run: npm ci
+      run: pnpm install --frozen-lockfile
 
     - name: Build package
-      run: npm run build
+      run: pnpm run build
 
     - name: Pack package
-      run: npm pack
+      run: pnpm pack
 
     - name: Test package installation
       run: |
         mkdir test-install
         cd test-install
-        npm init -y
-        npm install ../js-doc-design-*.tgz
+        pnpm init
+        pnpm install ../js-doc-design-*.tgz
         node -e "console.log('Package installed successfully')"
 
     - name: Test CLI commands from package
       run: |
         cd test-install
-        npx jsdoc-check --help
-        npx jsdoc-generate --help
-        npx jsdoc-simple --help
+        pnpm exec jsdoc-check --help
+        pnpm exec jsdoc-generate --help
+        pnpm exec jsdoc-simple --help

@@ -5,7 +5,14 @@
 ## Установка
 
 ```bash
+# Используя npm
 npm install js-doc-design
+
+# Используя pnpm (рекомендуется)
+pnpm add js-doc-design
+
+# Используя yarn
+yarn add js-doc-design
 ```
 
 ## Возможности
@@ -84,13 +91,13 @@ export default [
 
 ```bash
 # Проверка всех функций (по умолчанию)
-npm run lint
+pnpm run lint
 
 # Проверка только новых функций (изменения с HEAD)
-npm run lint:new
+pnpm run lint:new
 
 # Проверка только staged файлов
-npm run lint:staged
+pnpm run lint:staged
 ```
 
 ## Конфигурация
@@ -441,4 +448,57 @@ console.log(result); // 5
 *Файл: src/index.js*
 
 ---
+
+## Разработка
+
+### Установка зависимостей
+
+```bash
+# Клонирование репозитория
+git clone https://github.com/kirilllebedenko/js-doc-design.git
+cd js-doc-design
+
+# Установка зависимостей (рекомендуется pnpm)
+pnpm install
+
+# Или с npm
+npm install
+```
+
+### Доступные скрипты
+
+```bash
+# Сборка проекта
+pnpm run build
+
+# Разработка
+pnpm run dev
+
+# Тестирование
+pnpm run test
+pnpm run test:watch
+pnpm run test:coverage
+
+# Линтинг
+pnpm run lint
+pnpm run lint:fix
+
+# Проверка JSDoc
+pnpm run check:jsdoc
+pnpm run check:jsdoc:full
+pnpm run check:jsdoc:new
+pnpm run check:jsdoc:staged
+
+# Генерация документации
+pnpm run docs:generate
+pnpm run docs:simple
+```
+
+### Публикация
+
+```bash
+# Сборка и публикация
+pnpm run prepublishOnly
+pnpm publish
+```
 

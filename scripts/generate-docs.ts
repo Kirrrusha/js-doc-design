@@ -57,7 +57,6 @@ function extractJSDocFromFile(filePath: string): FunctionInfo[] {
     const content = fs.readFileSync(filePath, 'utf8');
     const functions: FunctionInfo[] = [];
 
-    // Регулярное выражение для поиска JSDoc комментариев с последующими функциями (поддержка TypeScript)
     const jsdocRegex = /\/\*\*([\s\S]*?)\*\/\s*(?:export\s+)?(?:function\s+(\w+)|(?:const|let|var)\s+(\w+)\s*=\s*(?:function|\(.*?\)\s*=>))/g;
 
     let match: RegExpExecArray | null;
@@ -178,7 +177,6 @@ function updateReadme(documentation: string): void {
     const readmePath = 'README.md';
     let readmeContent = '';
 
-    // Читаем существующий README или создаем базовый
     if (fs.existsSync(readmePath)) {
         readmeContent = fs.readFileSync(readmePath, 'utf8');
     } else {
@@ -186,11 +184,9 @@ function updateReadme(documentation: string): void {
         readmeContent = `# ${packageJson.name}\n\n${packageJson.description}\n\n`;
     }
 
-    // Удаляем старую документацию API если она есть
     const apiSectionRegex = /## API Документация[\s\S]*?(?=##|$)/;
     readmeContent = readmeContent.replace(apiSectionRegex, '');
 
-    // Добавляем новую документацию
     readmeContent = readmeContent.trim() + '\n\n' + documentation;
 
     fs.writeFileSync(readmePath, readmeContent);
@@ -217,7 +213,6 @@ async function main(): Promise<void> {
     }
 }
 
-// Запускаем скрипт если он вызван напрямую
 if (import.meta.url === `file://${process.argv[1]}`) {
     main();
 }

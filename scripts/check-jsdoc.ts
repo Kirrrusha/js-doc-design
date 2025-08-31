@@ -73,16 +73,13 @@ function checkFileForJSDoc(filePath: string): JSDocError[] {
         const functionName = match[1] || match[2];
         const matchIndex = match.index;
 
-        // Находим номер строки
         const beforeMatch = content.substring(0, matchIndex);
         const lineNumber = beforeMatch.split('\n').length;
 
-        // Проверяем, есть ли JSDoc комментарий перед функцией
         const linesBefore = lines.slice(Math.max(0, lineNumber - 10), lineNumber - 1);
         const hasJSDoc = linesBefore.some(line => line.trim().includes('/**'));
 
         if (!hasJSDoc) {
-            // Проверяем, не является ли это анонимной функцией в колбэке
             const isCallback = content.substring(Math.max(0, matchIndex - 50), matchIndex)
                 .includes('(') && !match[0].includes('function ' + functionName);
 
@@ -119,7 +116,7 @@ function getChangedFiles(mode: 'staged' | 'diff' = 'staged'): string[] {
             .filter(file => (file.endsWith('.ts') || file.endsWith('.js')) && file.startsWith('src/'))
             .map(file => file.trim())
             .filter(file => file.length > 0);
-    } catch (error) {
+    } catch {
         console.warn('⚠️  Не удалось получить список измененных файлов из Git');
         return [];
     }
@@ -132,28 +129,22 @@ function getChangedFiles(mode: 'staged' | 'diff' = 'staged'): string[] {
  */
 function getNewFunctionsInFile(filePath: string): JSDocError[] {
     try {
-        // Получаем текущую версию файла
         const currentContent = fs.readFileSync(filePath, 'utf8');
 
-        // Получаем предыдущую версию из Git
         let previousContent = '';
         try {
             previousContent = execSync(`git show HEAD:${filePath}`, { encoding: 'utf8' });
-        } catch (error) {
-            // Файл новый, все функции считаются новыми
+        } catch {
             return checkFileForJSDoc(filePath);
         }
 
-        // Находим функции в обеих версиях
         const currentFunctions = extractFunctionNames(currentContent);
         const previousFunctions = extractFunctionNames(previousContent);
 
-        // Определяем новые функции
         const newFunctionNames = currentFunctions.filter(func =>
             !previousFunctions.includes(func)
         );
 
-        // Проверяем только новые функции
         const allErrors = checkFileForJSDoc(filePath);
         return allErrors.filter(error =>
             newFunctionNames.includes(error.function)
@@ -318,7 +309,6 @@ function main(): void {
     }
 }
 
-// Запускаем скрипт
 if (import.meta.url === `file://${process.argv[1]}`) {
     main();
 }
