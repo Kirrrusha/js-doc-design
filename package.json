@@ -26,7 +26,7 @@
   ],
   "description": "Автоматизация работы с JSDoc документацией и контроля её наличия. Включает ESLint плагин, скрипты проверки и генерации документации.",
   "scripts": {
-    "build": "tsc && node scripts/add-shebang.js",
+    "build": "tsc && node --loader ts-node/esm scripts/add-shebang.ts",
     "prepublishOnly": "pnpm run build",
     "dev": "node --loader ts-node/esm src/index.ts",
     "lint": "npx eslint .",
